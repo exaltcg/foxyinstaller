@@ -5,7 +5,6 @@ echo "Destination folder: $2"
 
 FOXY_PATH="$2Applications/Foxy.app"
 FOXY_CLI=$FOXY_PATH/Resources/foxycli
-PATH="${FOXY_PATH}/cellar/bin:${FOXY_PATH}/node/bin:$PATH"
 
 echo "Setting  variables:"
 echo "\tApplication Path: ${FOXY_PATH}"
@@ -16,12 +15,21 @@ echo "\tInclude Path: ${PATH}"
 # Add or Skip Model
 MODEL_PATH="$FOXY_CLI/resources"
 MODEL_FILE="$MODEL_PATH/Hey_Foxy.pmdl"
+MODEL_OLD_PATH="/Applications/FoxyExtension/src/foxycli/resources/Hey_Foxy.pmdl"
+
 echo "Add or Skip Snowboy Model"
 echo "\tSnowboy Model Path: ${MODEL_PATH}"
 if ! test -f $MODEL_FILE; then
   echo "\tHey_Foxy.pmdl was not found."
-  echo "\tCopy default Snowboy model: \`cp $MODEL_PATH/Hey_Foxy.pmdl.original $MODEL_FILE\`"
-  cp $MODEL_PATH/Hey_Foxy.pmdl.original $MODEL_FILE
+  echo "\tTry to get from $MODEL_OLD_PATH"
+  if ! test -f $MODEL_OLD_PATH; then
+    echo "\t\tModel was not found from $MODEL_OLD_PATH"
+    echo "\t\tCopy default Snowboy model: \`cp $MODEL_PATH/Hey_Foxy.pmdl.original $MODEL_FILE\`"
+    cp $MODEL_PATH/Hey_Foxy.pmdl.original $MODEL_FILE
+  else
+    echo "\t\tModel was found at $MODEL_OLD_PATH. Copy to $MODEL_FILE"
+    cp $MODEL_OLD_PATH $MODEL_FILE
+  fi
 else
   echo "\tHey_Foxy.pmdl was found on $MODEL_FILE. Skipping..."
 fi
@@ -29,19 +37,35 @@ fi
 # Make config.json
 echo "Making default config.json"
 CONFIG_FILE="$FOXY_CLI/config/config.json"
-echo "\tconfig.json path: ${CONFIG_FILE}"
-if ! test -f $CONFIG_FILE; then
+CONFIG_OLD_PATH="/Applications/FoxyExtension/src/foxycli/config/config.json"
+
+echo "\tconfig.json path: $CONFIG_FILE"
+if [ ! -e $CONFIG_FILE ]; then
   echo "\tconfig.json was not found."
-  touch $CONFIG_FILE
-  echo '{
+
+  echo "\tTry to get from $CONFIG_OLD_PATH"
+  if [ ! -e $CONFIG_OLD_PATH ]; then
+    echo "\t\tconfig.json was not found at $CONFIG_OLD_PATH"
+    echo "\t\tMake default config.json"
+    touch $CONFIG_FILE
+    echo '{
       "GAProperty": "UA-35433268-85",
       "pocketconsumerkey": "70736-2005e161243be6d212d136d1"
-  }
-  ' > $CONFIG_FILE
-  echo "\tCreating config.json"
-  echo "\t{ \"GAProperty\": \"UA-35433268-85\", \"pocketconsumerkey\": \"70736-2005e161243be6d212d136d1\" }"
+    }
+    ' > $CONFIG_FILE
+    echo "\t\t{ \"GAProperty\": \"UA-35433268-85\", \"pocketconsumerkey\": \"70736-2005e161243be6d212d136d1\" }"
+  else
+    echo "\t\tconfig.json was found at $CONFIG_OLD_PATH. Copy to $CONFIG_FILE"
+    cp $CONFIG_OLD_PATH $CONFIG_FILE
+  fi
 else
   echo "\tconfig.json was found $FOXY_CLI/config/config.json. Skipping..."
+fi
+
+if [ -d "/Applications/FoxyExtension" ]; then
+  echo "Remove old path of Foxy /Applications/FoxyExtension"
+  echo "New path will be /Applications/Foxy.app"
+  rm -rf /Applications/FoxyExtension
 fi
 
 echo "Change permissions for $FOXY_PATH to $USER:staff"

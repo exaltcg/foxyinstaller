@@ -2,24 +2,33 @@
 
 echo "Running Foxy preinstall"
 
-echo "Checking $HOME/Library/Application\ Support/Mozilla/NativeMessagingHosts/foxycli.json"
-if [ -f "$HOME/Library/Application\ Support/Mozilla/NativeMessagingHosts/foxycli.json" ]; then
-  echo "\tRemove $HOME/Library/Application\ Support/Mozilla/NativeMessagingHosts/foxycli.json from HOME directory."
+FOXY_CLI_JSON="$HOME/Library/Application\ Support/Mozilla/NativeMessagingHosts/foxycli.json"
+echo "Checking $FOXY_CLI_JSON"
+if [ -e $HOME/Library/Application\ Support/Mozilla/NativeMessagingHosts/foxycli.json ]; then
+  echo "\tRemove $FOXY_CLI_JSON from HOME directory."
   echo "\tWill be installed to /Library/Application\ Support instead of ~/Library/Application\ Support"
   rm -rf $HOME/Library/Application\ Support/Mozilla/NativeMessagingHosts/foxycli.json
+else
+  echo "\t$FOXY_CLI_JSON was not found"
+fi
+
+echo "Checking foxycli@example.com Extension in HOME directory"
+if [ -e $HOME/Library/Application\ Support/Mozilla/Extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/foxycli@example.com.xpi ]; then
+  echo "\tRemove foxycli@example.com.xpi from HOME directory."
+  echo "\tWill be installed to /Library/Application\ Support instead of ~/Library/Application\ Support"
+  rm -rf $HOME/Library/Application\ Support/Mozilla/Extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/foxycli@example.com.xpi
+else
+  echo "\t$HOME/Library/Application\ Support/Mozilla/Extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/foxycli@example.com.xpi was not found"
 fi
 
 echo "Checking /Applications/FoxyExtension"
 if [ -d "/Applications/FoxyExtension" ]; then
   echo "\tStop PM2 daemon."
-  echo "\tRemove /Applications/FoxyExtension."
-  echo "\tNew path will be /Applications/Foxy.app"
   PATH="$PATH:/Applications/FoxyExtension/libs/node/bin" /Applications/FoxyExtension/src/foxycli/node_modules/pm2/bin/pm2 kill
-  rm -rf /Applications/FoxyExtension
 fi
 
 echo "Unload Launch Agent"
-if [ -f "/Library/LaunchAgents/com.example.foxy.mozilla.plist" ]; then
+if [ -e "/Library/LaunchAgents/com.example.foxy.mozilla.plist" ]; then
   echo "\tlaunchctl unload /Library/LaunchAgents/com.example.foxy.mozilla.plist"
   launchctl unload /Library/LaunchAgents/com.example.foxy.mozilla.plist
 fi

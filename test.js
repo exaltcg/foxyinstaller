@@ -5,14 +5,14 @@ const RESOURCES = 'root/Applications/Foxy.app/Resources';
 const EXTENSION =
   'root/Library/Application Support/Mozilla/Extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}';
 
-test('"foxycli" folder is existed', (t) => {
+test('"foxycli" folder was found', (t) => {
   t.true(existsSync(`${RESOURCES}/foxycli`));
   t.true(statSync(`${RESOURCES}/foxycli`).isDirectory());
 });
 
-test('"cellar" folder is exitsted', (t) => {
-  t.true(existsSync(`${RESOURCES}/cellar`));
-  t.true(statSync(`${RESOURCES}/cellar`).isDirectory());
+test('".homebrew" folder was found', (t) => {
+  t.true(existsSync(`${RESOURCES}/.homebrew`));
+  t.true(statSync(`${RESOURCES}/.homebrew`).isDirectory());
 });
 
 test('"node" folder is exitsted', (t) => {

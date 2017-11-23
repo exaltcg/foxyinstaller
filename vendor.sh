@@ -5,18 +5,19 @@ DIRNAME="$( cd $(dirname "$0"); pwd -P )"
 
 
 # Cellar
-if [ ! -d "root/Applications/Foxy.app/Resources/cellar" ]; then
+if [ ! -d "/Applications/Foxy.app/Resources/.homebrew" ]; then
 
   # Brew
-  if [ ! -d ".homebrew/bin" ]; then
-    git clone https://github.com/mxcl/homebrew.git .homebrew
-    .homebrew/bin/brew update
-    .homebrew/bin/brew install --build-bottle portaudio sox opus-tools
+  if [ ! -d "/Applications/Foxy.app/Resources/.homebrew" ]; then
+    git clone https://github.com/mxcl/homebrew.git /Applications/Foxy.app/Resources/.homebrew
   fi
-
-  mkdir -p root/Applications/Foxy.app/Resources/cellar
-  cp -rf .homebrew/{bin,Cellar,lib,opt,var} root/Applications/Foxy.app/Resources/cellar
+  /Applications/Foxy.app/Resources/.homebrew/bin/brew update
+  /Applications/Foxy.app/Resources/.homebrew/bin/brew install --build-bottle pkg-config portaudio flac libpng mad sox opus opus-tools
+  rm -rf root/Applications/Foxy.app/Resources/.homebrew
+  cp -af /Applications/Foxy.app/Resources/.homebrew root/Applications/Foxy.app/Resources
 fi
+
+# sox: https://sourceforge.net/projects/sox/files/latest/download?source=files
 
 # Node
 if [ ! -d "root/Applications/Foxy.app/Resources/node" ]; then

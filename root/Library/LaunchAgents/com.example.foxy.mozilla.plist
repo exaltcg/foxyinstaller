@@ -22,7 +22,7 @@
     <key>EnvironmentVariables</key>
     <dict>
       <key>PATH</key>
-      <string>/Applications/Foxy.app/Resources/cellar/bin:/Applications/Foxy.app/Resources/node/bin</string>
+      <string>/Applications/Foxy.app/Resources/.homebrew/bin:/Applications/Foxy.app/Resources/node/bin</string>
     </dict>
     <key>StandardErrorPath</key>
     <string>/tmp/com.example.foxy.mozilla.err</string>
